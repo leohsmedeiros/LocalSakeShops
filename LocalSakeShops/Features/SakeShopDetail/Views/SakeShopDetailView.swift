@@ -9,6 +9,7 @@ struct SakeShopDetailView: View {
 
     /// The ViewModel providing shop data and URL-opening actions.
     @State var viewModel: SakeShopDetailViewModel
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         ScrollView {
@@ -57,6 +58,11 @@ struct SakeShopDetailView: View {
                 }
                 .padding(.bottom, DSSpacing.lg)
             }
+        }
+        .onChange(of: viewModel.urlToOpen) { _, url in
+            guard let url else { return }
+            openURL(url)
+            viewModel.urlToOpen = nil
         }
         .navigationTitle(viewModel.shop.name)
         .navigationBarTitleDisplayMode(.inline)

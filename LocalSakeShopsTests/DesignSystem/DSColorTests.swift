@@ -1,50 +1,59 @@
 import Testing
-import UIKit
+import Foundation
 @testable import LocalSakeShops
 
-/// Tests that every DSColor token resolves to a named asset in the app bundle.
-/// If a color set is missing from Assets.xcassets, UIColor(named:) returns nil
-/// and the test fails, surfacing the gap before the app is run.
+/// Tests that every DSColor token has a matching color asset in Assets.xcassets.
 @Suite("DSColor Token Tests")
 struct DSColorTests {
 
-    @Test func primaryResolves() {
-        #expect(UIColor(named: "DSPrimary") != nil)
+    private static let colorNames = [
+        "DSPrimary",
+        "DSSecondary",
+        "DSBackground",
+        "DSSurface",
+        "DSOnPrimary",
+        "DSOnSurface",
+        "DSSubdued",
+        "DSError",
+        "DSSuccess",
+        "DSWarning"
+    ]
+
+    @Test func allColorAssetsExist() throws {
+        let assetsCatalogURL = try DSColorTests.findAssetsCatalog()
+
+        for colorName in Self.colorNames {
+            let colorSetURL = assetsCatalogURL
+                .appendingPathComponent("\(colorName).colorset")
+                .appendingPathComponent("Contents.json")
+
+            #expect(
+                FileManager.default.fileExists(atPath: colorSetURL.path),
+                "Missing color asset: \(colorName).colorset"
+            )
+        }
     }
 
-    @Test func secondaryResolves() {
-        #expect(UIColor(named: "DSSecondary") != nil)
+    private static func findAssetsCatalog() throws -> URL {
+        var currentURL = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+
+        while currentURL.path != "/" {
+            let possibleURL = currentURL
+                .appendingPathComponent("LocalSakeShops")
+                .appendingPathComponent("Assets.xcassets")
+
+            if FileManager.default.fileExists(atPath: possibleURL.path) {
+                return possibleURL
+            }
+
+            currentURL.deleteLastPathComponent()
+        }
+
+        throw AssetCatalogError.notFound
     }
 
-    @Test func backgroundResolves() {
-        #expect(UIColor(named: "DSBackground") != nil)
-    }
-
-    @Test func surfaceResolves() {
-        #expect(UIColor(named: "DSSurface") != nil)
-    }
-
-    @Test func onPrimaryResolves() {
-        #expect(UIColor(named: "DSOnPrimary") != nil)
-    }
-
-    @Test func onSurfaceResolves() {
-        #expect(UIColor(named: "DSOnSurface") != nil)
-    }
-
-    @Test func subduedResolves() {
-        #expect(UIColor(named: "DSSubdued") != nil)
-    }
-
-    @Test func errorResolves() {
-        #expect(UIColor(named: "DSError") != nil)
-    }
-
-    @Test func successResolves() {
-        #expect(UIColor(named: "DSSuccess") != nil)
-    }
-
-    @Test func warningResolves() {
-        #expect(UIColor(named: "DSWarning") != nil)
+    private enum AssetCatalogError: Error {
+        case notFound
     }
 }

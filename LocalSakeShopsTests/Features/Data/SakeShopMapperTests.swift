@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 @testable import LocalSakeShops
 
 @Suite("SakeShopMapper Tests")
@@ -71,12 +72,27 @@ struct SakeShopMapperTests {
 
     // MARK: - URL parsing
 
-    @Test("Invalid URL string maps to nil")
+    @Test("Scheme-less string maps to nil URL")
     func invalidURLMapsToNil() {
+        // Strings without an http/https scheme must map to nil even when
+        // URL(string:) can parse them as relative references on newer Foundation.
         let dto = SakeShopDTO(
-            name: "X", description: "", picture: "not a url",
+            name: "X", description: "", picture: "no-scheme-here",
             rating: 4.0, address: "", coordinates: nil,
-            googleMapsLink: "also not a url", website: "  "
+            googleMapsLink: "also-no-scheme", website: "relative/path/only"
+        )
+        let shop = SakeShopMapper.map(dto)
+        #expect(shop.pictureURL == nil)
+        #expect(shop.mapsURL == nil)
+        #expect(shop.websiteURL == nil)
+    }
+
+    @Test("Empty string maps to nil URL")
+    func emptyStringMapsToNil() {
+        let dto = SakeShopDTO(
+            name: "X", description: "", picture: "",
+            rating: 4.0, address: "", coordinates: nil,
+            googleMapsLink: "", website: ""
         )
         let shop = SakeShopMapper.map(dto)
         #expect(shop.pictureURL == nil)

@@ -14,12 +14,21 @@ enum SakeShopMapper {
             id: UUID(),
             name: dto.name,
             description: dto.description,
-            pictureURL: dto.picture.flatMap(URL.init(string:)),
+            pictureURL: parseURL(dto.picture),
             rating: min(max(dto.rating, 0.0), 5.0),
             address: dto.address,
-            mapsURL: dto.googleMapsLink.flatMap(URL.init(string:)),
-            websiteURL: dto.website.flatMap(URL.init(string:))
+            mapsURL: parseURL(dto.googleMapsLink),
+            websiteURL: parseURL(dto.website)
         )
+    }
+
+    // URL(string:) on newer Foundation can return a non-nil relative-reference URL for
+    // arbitrary strings. Requiring a non-nil scheme ensures only absolute URLs survive.
+    private static func parseURL(_ string: String?) -> URL? {
+        guard let string,
+              let url = URL(string: string),
+              url.scheme != nil else { return nil }
+        return url
     }
 
     /// Maps an array of `SakeShopDTO` objects, preserving their original order.
