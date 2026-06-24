@@ -115,6 +115,7 @@ LocalSakeShopsUITests/
 - **`BundledJSONDataSource<T: Decodable>`** is generic and reusable. Adding support for a new JSON-backed feature requires only a new DTO, mapper, and repository — the data source itself needs no changes.
 - **`ViewState<T>`** is a single enum replacing multiple `@Published` booleans, eliminating impossible UI states.
 - **`SakeShop: Hashable`** enables typed `NavigationStack` destinations without a router layer.
+- **`SakeShopMapper.parseURL` validates `url.scheme != nil`** because iOS 26's Swift Foundation changed `URL(string:)` to return non-nil for relative-reference strings (e.g. `"no-scheme-here"`). Requiring a non-nil scheme ensures only absolute URLs reach the domain layer.
 - All dependencies flow inward via constructor injection through protocols, keeping every layer independently testable.
 
 ---
@@ -143,12 +144,12 @@ Run all tests with **⌘U** in Xcode.
 | Suite | Type | Count | What it covers |
 |-------|------|-------|----------------|
 | `BundledJSONDataSourceTests` | Integration | 3 | Bundle JSON loading, missing file error |
-| `SakeShopMapperTests` | Unit | 6 | DTO → entity mapping, rating clamping, URL parsing |
+| `SakeShopMapperTests` | Unit | 6 | DTO → entity mapping, rating clamping, URL scheme validation (iOS 26 compat) |
 | `SakeShopRepositoryTests` | Unit | 4 | Error remapping, mock data source call count |
 | `FetchSakeShopsUseCaseTests` | Unit | 3 | Delegation, error propagation, call count |
 | `SakeShopListViewModelTests` | Unit | 5 | ViewState transitions (idle/loading/success/empty/error) |
 | `SakeShopDetailViewModelTests` | Unit | 5 | canOpenMaps, canOpenWebsite, rating exposure |
-| `SakeShopSnapshotTests` (UITest) | UI | 6 | XCTAttachment screenshots (light/dark, portrait/landscape, back navigation) |
+| `SakeShopSnapshotTests` (UITest) | UI | 6 | XCTAttachment screenshots (light/dark, portrait/landscape, back navigation); queries use `scrollViews`/`buttons` to match `ScrollView + LazyVStack` list layout |
 | `DesignSystemSnapshotTests` (UITest) | UI | — | Design system token visual audit |
 | `DSIcon/Color/Spacing/…Tests` | Unit | — | Token non-empty / value correctness |
 
@@ -181,6 +182,13 @@ The design system specification (`docs/DESIGN.md`) was generated using **Google 
 - The repository and Xcode project skeleton were created manually
 - `sake_shops.json` was provided as part of the challenge brief
 - Final layout adjustments (AsyncImage in list rows, `MapCardView` integration, `@Observable` migration) were applied by a linter/post-processing step after the AI-generated implementation
+
+### Post-implementation fixes
+
+Two bugs surfaced after the initial implementation and were corrected in follow-up sessions:
+
+- **iOS 26 URL parsing** (`SakeShopMapper`): Swift Foundation's `URL(string:)` changed in iOS 26 to accept relative-reference strings as valid URLs. `parseURL` was updated to require `url.scheme != nil`, and `SakeShopMapperTests` was updated with scheme-less test strings that expose the regression.
+- **UI test element queries** (`SakeShopSnapshotTests`): The linter's `List → ScrollView + LazyVStack` change meant XCUITest's `collectionViews`/`cells` queries found nothing. Tests were restructured to call `launchApp()` per-test (setting `-UIUserInterfaceStyle` before launch), and element queries were updated to `scrollViews`/`buttons` to match the new layout.
 
 ### Transparency note
 
