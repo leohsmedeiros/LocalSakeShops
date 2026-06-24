@@ -159,6 +159,7 @@ All mocks live in dedicated files under `LocalSakeShopsTests/Mocks/` — none ar
 ## AI Use
 
 This project was developed using **Claude Code** (Anthropic) as the primary engineering assistant, following a **Spec-Driven Development** workflow powered by the [Spec Kit](https://github.com/speckit) toolchain.
+The design system specification (`docs/DESIGN.md`) was generated using **Google Stitch**.
 
 ### Workflow
 
