@@ -41,6 +41,7 @@ struct DSColorTests {
         while currentURL.path != "/" {
             let possibleURL = currentURL
                 .appendingPathComponent("LocalSakeShops")
+                .appendingPathComponent("Resources")
                 .appendingPathComponent("Assets.xcassets")
 
             if FileManager.default.fileExists(atPath: possibleURL.path) {

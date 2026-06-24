@@ -1,12 +1,12 @@
 # LocalSakeShops
 
-A native iOS app for discovering local sake shops in Nagano, Japan. Browse a curated list of breweries and specialty shops, view shop details, open addresses in Maps, and visit shop websites — all from a clean, design-system-driven interface.
+This project is a native iOS application built as part of a technical challenge. It showcases a clean, design-system-driven interface for discovering local sake shops in Nagano, Japan. Users can browse a curated list of breweries and specialty shops, view shop details, open locations in Maps, and access shop websites directly from the app.
 
 ---
 
 ## Features
 
-- **Shop list** — scrollable list of 10 local sake shops with name, address, and star rating
+- **Shop list** — scrollable list of local sake shops with name, address, and star rating
 - **Shop detail** — full profile with photo, description, rating, tappable address (opens Maps), and website button
 - **Graceful degradation** — placeholder image when no photo is available; website button hidden when URL is absent
 - **State handling** — loading, empty, and error states on every data-loading screen
@@ -60,11 +60,17 @@ There are no third-party libraries, SPM packages, or CocoaPods.
 
 ## Architecture
 
-The project follows **Clean Architecture** with a **layer-first structure** inside a single Xcode target. Domain and Data are top-level layers independent of any feature; only the presentation layer (Views + ViewModels) is organised under `Features/`.
+The project follows **Clean Architecture** with a **layer-first Modular structure** inside a single Xcode target. Domain and Data are top-level layers independent of any feature; only the presentation layer (Views + ViewModels) is organised under `Features/`.
 
 ```
 Views → ViewModels → Domain (Use Cases, Entities) → Data (Repositories, DTOs, Mappers)
 ```
+
+The project intentionally uses a **layer-first modular structure** instead of a strict **feature-first modular structure** because, at this scale, Clean Architecture’s dependency rules are more important than folder-level feature isolation.
+
+In a single Xcode target, shared business concepts such as `SakeShop`, repository protocols, domain errors, and use cases naturally belong to the application’s domain layer, not to one specific feature. Forcing a feature-first structure without package module boundaries would either duplicate shared domain types across features or require hoisting them back to a shared layer, which weakens the purpose of the structure.
+
+The trade-off is that feature folders contain only the presentation concerns, while Domain and Data remain centralized and reusable. A true feature-first architecture would become more appropriate if the project evolved into separate Swift Package Manager modules, where each feature could own its own isolated Domain, Data, and Presentation layers at the compiler level.
 
 ### Folder structure
 
