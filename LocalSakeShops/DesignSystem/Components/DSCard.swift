@@ -15,18 +15,20 @@ import SwiftUI
 /// }
 /// ```
 struct DSCard<Content: View>: View {
-
+    
     /// The content rendered inside the card.
     let content: Content
+    let customBackgroundColor: Color?
 
-    init(@ViewBuilder content: () -> Content) {
+    init(@ViewBuilder content: () -> Content, backgroundColor: Color? = nil) {
         self.content = content()
+        self.customBackgroundColor = backgroundColor
     }
 
     var body: some View {
         content
             .padding(DSSpacing.margin)
-            .background(DSColor.surface)
+            .background(customBackgroundColor ?? DSColor.surface)
             .cornerRadius(DSCornerRadius.large)
             .dsShadow(.low)
     }

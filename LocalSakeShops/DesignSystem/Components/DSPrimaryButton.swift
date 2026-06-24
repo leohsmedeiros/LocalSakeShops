@@ -40,7 +40,7 @@ struct DSPrimaryButton: View {
 #Preview {
     VStack(spacing: DSSpacing.md) {
         DSPrimaryButton(label: "Find Shops") {}
-        DSPrimaryButton(label: "Disabled", action:  {}, isEnabled: false)
+        DSPrimaryButton(label: "Disabled", action: {}, isEnabled: false)
     }
     .padding(DSSpacing.md)
 }

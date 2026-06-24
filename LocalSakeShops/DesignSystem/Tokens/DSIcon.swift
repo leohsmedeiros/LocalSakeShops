@@ -51,4 +51,16 @@ enum DSIcon {
 
     /// Chevron right — inline navigation or disclosure.
     static let chevronRight = "chevron.right"
+
+    /// Star outline — empty rating star.
+    static let star = "star"
+
+    /// Star filled — full rating star.
+    static let starFill = "star.fill"
+
+    /// Star half-filled — half rating star.
+    static let starHalfFill = "star.leadinghalf.filled"
+
+    /// Generic image placeholder — shown when a shop photo is unavailable.
+    static let shopPlaceholder = "photo"
 }

@@ -63,4 +63,20 @@ struct DSIconTests {
     @Test func chevronRightSymbolIsNonEmpty() {
         #expect(!DSIcon.chevronRight.isEmpty)
     }
+
+    @Test func starSymbolIsNonEmpty() {
+        #expect(!DSIcon.star.isEmpty)
+    }
+
+    @Test func starFillSymbolIsNonEmpty() {
+        #expect(!DSIcon.starFill.isEmpty)
+    }
+
+    @Test func starHalfFillSymbolIsNonEmpty() {
+        #expect(!DSIcon.starHalfFill.isEmpty)
+    }
+
+    @Test func shopPlaceholderSymbolIsNonEmpty() {
+        #expect(!DSIcon.shopPlaceholder.isEmpty)
+    }
 }

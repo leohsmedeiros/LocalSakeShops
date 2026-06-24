@@ -27,4 +27,7 @@ enum DSSpacing {
 
     /// 20pt — screen edge margin.
     static let margin: CGFloat = 20
+
+    /// 60pt — large system image icon size (e.g. AsyncImage placeholder).
+    static let iconLarge: CGFloat = 60
 }

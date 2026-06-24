@@ -9,10 +9,19 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        DesignSystemPreview()
+        SakeShopListView(
+            viewModel: SakeShopListViewModel(
+                fetchShops: FetchSakeShopsUseCase(
+                    repository: SakeShopRepository(
+                        dataSource: BundledJSONDataSource()
+                    )
+                )
+            )
+        )
     }
 }
 
 #Preview {
     ContentView()
 }
+
