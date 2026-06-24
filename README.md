@@ -60,7 +60,7 @@ There are no third-party libraries, SPM packages, or CocoaPods.
 
 ## Architecture
 
-The project follows **Clean Architecture** with a **feature-first modular layout** inside a single Xcode target.
+The project follows **Clean Architecture** with a **layer-first structure** inside a single Xcode target. Domain and Data are top-level layers independent of any feature; only the presentation layer (Views + ViewModels) is organised under `Features/`.
 
 ```
 Views → ViewModels → Domain (Use Cases, Entities) → Data (Repositories, DTOs, Mappers)
@@ -83,17 +83,20 @@ LocalSakeShops/
 │   ├── UseCases/           # FetchSakeShopsUseCase + protocol
 │   └── Errors/             # SakeShopError (LocalizedError)
 ├── Data/
-│   ├── DataSources/        # BundledJSONDataSource (generic, reusable)
+│   ├── DataSources/        # BundledJSONDataSource (generic, reusable) + protocol
 │   ├── Repositories/       # SakeShopRepository
 │   ├── DTOs/               # SakeShopDTO (Decodable)
 │   └── Mappers/            # SakeShopMapper (DTO → Entity)
 ├── Shared/
 │   ├── State/              # ViewState<T> enum
-│   └── Views/              # StarRatingView
+│   └── Views/              # MapCardView, StarRatingView
 ├── DesignSystem/
 │   ├── Tokens/             # DSColor, DSTypography, DSSpacing, DSIcon, …
-│   └── Components/         # DSPrimaryButton, DSSecondaryButton, DSCard, DSTextStyle
-└── sake_shops.json         # Bundled data source
+│   ├── Components/         # DSPrimaryButton, DSSecondaryButton, DSCard, DSTextStyle
+│   └── Preview/            # DesignSystemPreview (canvas preview target)
+└── Resources/
+    ├── Assets.xcassets     # Color assets backing DSColor tokens
+    └── sake_shops.json     # Bundled data source
 
 LocalSakeShopsTests/
 ├── Mocks/                  # MockSakeShopRepository, MockFetchSakeShopsUseCase,
