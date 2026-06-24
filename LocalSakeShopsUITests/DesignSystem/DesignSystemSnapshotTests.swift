@@ -35,7 +35,7 @@ final class DesignSystemSnapshotTests: XCTestCase {
 
     func testDesignSystemPreview_darkMode() throws {
         app.terminate()
-        app.launchArguments += ["-UIUserInterfaceStyle", "dark", "2"]
+        app.launchArguments += ["-UIUserInterfaceStyle", "2"]
         app.launch()
 
         let screenshot = app.screenshot()
