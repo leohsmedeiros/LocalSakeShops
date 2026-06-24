@@ -50,9 +50,8 @@ Select an iPhone simulator (iOS 26.5+) and press **⌘R** to build and run.
 
 | Framework | Purpose |
 |-----------|---------|
-| SwiftUI | All views and navigation |
+| SwiftUI | All views, navigation, and URL opening via `@Environment(\.openURL)` |
 | Foundation | Data models, URL handling, JSON decoding |
-| UIKit | `UIApplication.shared.open(_:)` for Maps and browser URLs |
 | XCTest / Swift Testing | Unit and UI tests |
 
 There are no third-party libraries, SPM packages, or CocoaPods.
@@ -185,10 +184,12 @@ The design system specification (`docs/DESIGN.md`) was generated using **Google 
 
 ### Post-implementation fixes
 
-Two bugs surfaced after the initial implementation and were corrected in follow-up sessions:
+Several bugs surfaced after the initial implementation and were corrected in follow-up sessions:
 
 - **iOS 26 URL parsing** (`SakeShopMapper`): Swift Foundation's `URL(string:)` changed in iOS 26 to accept relative-reference strings as valid URLs. `parseURL` was updated to require `url.scheme != nil`, and `SakeShopMapperTests` was updated with scheme-less test strings that expose the regression.
 - **UI test element queries** (`SakeShopSnapshotTests`): The linter's `List → ScrollView + LazyVStack` change meant XCUITest's `collectionViews`/`cells` queries found nothing. Tests were restructured to call `launchApp()` per-test (setting `-UIUserInterfaceStyle` before launch), and element queries were updated to `scrollViews`/`buttons` to match the new layout.
+- **UIKit removed** (`SakeShopDetailViewModel`): `UIApplication.shared.open(_:)` was replaced with a `urlToOpen: URL?` published property. `SakeShopDetailView` now consumes it via `@Environment(\.openURL)` and `.onChange(of:)`, eliminating the UIKit import entirely.
+- **Design system snapshot test** (`DesignSystemSnapshotTests`): The dark-mode launch argument was malformed — `["-UIUserInterfaceStyle", "dark", "2"]` passed three elements where only two are valid. The spurious `"dark"` string caused the app to hang on launch and the screenshot call to time out. Fixed to `["-UIUserInterfaceStyle", "2"]`.
 
 ### Transparency note
 
